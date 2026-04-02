@@ -1,0 +1,55 @@
+---
+- name: Deploy LAMP and Grafana stack
+  hosts: docker
+  become: true
+
+  pre_tasks:
+    - name: Install required Python package for Docker modules
+      ansible.builtin.package:
+        name:
+          - python3-pip
+        state: present
+
+    - name: Install docker Python SDK
+      ansible.builtin.pip:
+        name:
+          - docker
+          - docker-compose
+        state: present
+
+  tasks:
+    - name: Install Docker engine and compose plugin
+      ansible.builtin.package:
+        name:
+          - docker.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker service is enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create app directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create www directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}/www"
+        state: directory
+        mode: "0755"
+
+    - name: Copy compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: "{{ app_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: Start stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ app_dir }}"
+        state: present

@@ -1,0 +1,6 @@
+app_dir: /opt/lamp-grafana
+apache_port: 8081
+mysql_port: 3306
+grafana_port: 3000
+mysql_root_password: root
+mysql_database: lamp

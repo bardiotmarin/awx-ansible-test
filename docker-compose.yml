@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  apache:
+    image: php:8.2-apache
+    ports:
+      - "8081:80"
+    volumes:
+      - ./www:/var/www/html
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lamp
+    ports:
+      - "3306:3306"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
